@@ -1,0 +1,743 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dashboard - Task Manager</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #0a1628 0%, #1a3a6b 50%, #2d6da8 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .dashboard-container {
+            max-width: 1000px;
+            margin: 0 auto;
+        }
+
+        /* ===== HEADER ===== */
+        .header {
+            background: linear-gradient(145deg, #0d1f3c, #162d5a);
+            padding: 20px 30px;
+            border-radius: 15px;
+            border: 1px solid rgba(45, 109, 168, 0.3);
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.4);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 30px;
+            flex-wrap: wrap;
+            gap: 15px;
+        }
+
+        .header-left {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .header-left .logo {
+            font-size: 30px;
+        }
+
+        .header-left h1 {
+            color: #e8f0fe;
+            font-size: 24px;
+        }
+
+        .header-left h1 span {
+            color: #5b9bd5;
+        }
+
+        .header-left .badge {
+            font-size: 11px;
+            padding: 4px 12px;
+            background: rgba(45, 109, 168, 0.3);
+            border-radius: 12px;
+            color: #8ab4d6;
+        }
+
+        .header-right {
+            display: flex;
+            align-items: center;
+            gap: 20px;
+            flex-wrap: wrap;
+        }
+
+        .user-info {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            color: #b8d4e8;
+        }
+
+        .user-info .avatar {
+            width: 40px;
+            height: 40px;
+            background: linear-gradient(135deg, #5b9bd5, #2d6da8);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 18px;
+            font-weight: bold;
+            color: white;
+        }
+
+        .user-info .user-name {
+            font-weight: 500;
+            color: #e8f0fe;
+        }
+
+        .user-info .user-email {
+            font-size: 12px;
+            color: #6a8fb1;
+        }
+
+        .logout-btn {
+            padding: 10px 25px;
+            background: rgba(255, 107, 107, 0.2);
+            color: #ff8a8a;
+            border: 1px solid rgba(255, 107, 107, 0.3);
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 14px;
+            font-weight: 600;
+            transition: all 0.3s;
+        }
+
+        .logout-btn:hover {
+            background: rgba(255, 107, 107, 0.3);
+            transform: translateY(-2px);
+        }
+
+        /* ===== WELCOME ===== */
+        .welcome-section {
+            background: linear-gradient(145deg, #0d1f3c, #162d5a);
+            padding: 30px;
+            border-radius: 15px;
+            border: 1px solid rgba(45, 109, 168, 0.3);
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.4);
+            margin-bottom: 30px;
+            text-align: center;
+        }
+
+        .welcome-section h2 {
+            color: #e8f0fe;
+            font-size: 28px;
+            margin-bottom: 5px;
+        }
+
+        .welcome-section h2 span {
+            color: #5b9bd5;
+        }
+
+        .welcome-section p {
+            color: #8ab4d6;
+            font-size: 14px;
+        }
+
+        /* ===== ADD TASK ===== */
+        .add-task-section {
+            background: linear-gradient(145deg, #0d1f3c, #162d5a);
+            padding: 25px 30px;
+            border-radius: 15px;
+            border: 1px solid rgba(45, 109, 168, 0.3);
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.4);
+            margin-bottom: 30px;
+        }
+
+        .add-task-section h3 {
+            color: #e8f0fe;
+            font-size: 18px;
+            margin-bottom: 15px;
+        }
+
+        .add-task-section h3 i {
+            color: #5b9bd5;
+            margin-right: 10px;
+        }
+
+        #taskForm {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 15px;
+        }
+
+        #taskForm input {
+            flex: 1;
+            min-width: 180px;
+            padding: 12px 16px;
+            background: rgba(255, 255, 255, 0.06);
+            border: 2px solid rgba(45, 109, 168, 0.3);
+            border-radius: 10px;
+            font-size: 14px;
+            color: #e8f0fe;
+            transition: all 0.3s;
+            outline: none;
+        }
+
+        #taskForm input::placeholder {
+            color: #6a8fb1;
+        }
+
+        #taskForm input:focus {
+            border-color: #5b9bd5;
+            background: rgba(255, 255, 255, 0.1);
+            box-shadow: 0 0 20px rgba(45, 109, 168, 0.2);
+        }
+
+        #taskForm button {
+            padding: 12px 35px;
+            background: linear-gradient(135deg, #1a4a7a, #2d6da8);
+            color: white;
+            border: none;
+            border-radius: 10px;
+            font-size: 15px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
+            box-shadow: 0 4px 15px rgba(45, 109, 168, 0.3);
+        }
+
+        #taskForm button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 30px rgba(45, 109, 168, 0.5);
+            background: linear-gradient(135deg, #1f5a8f, #3a7fc0);
+        }
+
+        .cancel-edit-btn {
+            padding: 12px 25px;
+            background: rgba(255, 107, 107, 0.2);
+            color: #ff8a8a;
+            border: 1px solid rgba(255, 107, 107, 0.3);
+            border-radius: 10px;
+            font-size: 15px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
+            display: none;
+        }
+
+        .cancel-edit-btn:hover {
+            background: rgba(255, 107, 107, 0.3);
+        }
+
+        /* ===== TASK LIST ===== */
+        .task-list-section {
+            background: linear-gradient(145deg, #0d1f3c, #162d5a);
+            padding: 25px 30px;
+            border-radius: 15px;
+            border: 1px solid rgba(45, 109, 168, 0.3);
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.4);
+        }
+
+        .task-list-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+            flex-wrap: wrap;
+            gap: 10px;
+        }
+
+        .task-list-header h3 {
+            color: #e8f0fe;
+            font-size: 18px;
+        }
+
+        .task-list-header h3 i {
+            color: #5b9bd5;
+            margin-right: 10px;
+        }
+
+        .task-count {
+            color: #8ab4d6;
+            font-size: 14px;
+            background: rgba(45, 109, 168, 0.2);
+            padding: 6px 15px;
+            border-radius: 20px;
+        }
+
+        #tasksContainer {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+        }
+
+        /* ===== TASK ITEM ===== */
+        .task-item {
+            background: rgba(255, 255, 255, 0.05);
+            padding: 18px 20px;
+            border-radius: 12px;
+            border: 1px solid rgba(45, 109, 168, 0.15);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            transition: all 0.3s;
+            gap: 15px;
+        }
+
+        .task-item:hover {
+            background: rgba(255, 255, 255, 0.08);
+            border-color: rgba(45, 109, 168, 0.3);
+            transform: translateX(5px);
+        }
+
+        .task-info {
+            flex: 1;
+        }
+
+        .task-info .task-title {
+            color: #e8f0fe;
+            font-size: 16px;
+            font-weight: 600;
+            margin-bottom: 5px;
+        }
+
+        .task-info .task-description {
+            color: #8ab4d6;
+            font-size: 14px;
+            margin-bottom: 5px;
+        }
+
+        .task-info .task-meta {
+            display: flex;
+            gap: 15px;
+            font-size: 12px;
+            color: #6a8fb1;
+            flex-wrap: wrap;
+        }
+
+        .task-info .task-meta span {
+            display: flex;
+            align-items: center;
+            gap: 5px;
+        }
+
+        .task-actions {
+            display: flex;
+            gap: 10px;
+        }
+
+        .task-actions button {
+            padding: 8px 18px;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 13px;
+            font-weight: 600;
+            transition: all 0.3s;
+        }
+
+        .task-actions .edit-btn {
+            background: rgba(91, 155, 213, 0.2);
+            color: #8ab4d6;
+            border: 1px solid rgba(91, 155, 213, 0.3);
+        }
+
+        .task-actions .edit-btn:hover {
+            background: rgba(91, 155, 213, 0.3);
+            transform: scale(1.05);
+        }
+
+        .task-actions .delete-btn {
+            background: rgba(255, 107, 107, 0.2);
+            color: #ff8a8a;
+            border: 1px solid rgba(255, 107, 107, 0.3);
+        }
+
+        .task-actions .delete-btn:hover {
+            background: rgba(255, 107, 107, 0.3);
+            transform: scale(1.05);
+        }
+
+        /* ===== NO TASKS ===== */
+        .no-tasks {
+            text-align: center;
+            color: #6a8fb1;
+            padding: 40px 20px;
+            font-size: 16px;
+        }
+
+        .no-tasks .emoji {
+            font-size: 60px;
+            display: block;
+            margin-bottom: 15px;
+            animation: bounce 2s infinite;
+        }
+
+        @keyframes bounce {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-10px); }
+        }
+
+        /* ===== LOADING ===== */
+        .loading {
+            text-align: center;
+            color: #8ab4d6;
+            padding: 30px;
+            font-size: 16px;
+        }
+
+        /* ===== RESPONSIVE ===== */
+        @media (max-width: 768px) {
+            .header {
+                flex-direction: column;
+                text-align: center;
+            }
+
+            .header-right {
+                justify-content: center;
+            }
+
+            #taskForm {
+                flex-direction: column;
+            }
+
+            #taskForm input {
+                min-width: 100%;
+            }
+
+            .task-item {
+                flex-direction: column;
+                align-items: flex-start;
+            }
+
+            .task-actions {
+                width: 100%;
+                justify-content: flex-start;
+            }
+
+            .task-info .task-meta {
+                flex-direction: column;
+                gap: 5px;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .header-left h1 {
+                font-size: 18px;
+            }
+
+            .add-task-section,
+            .task-list-section {
+                padding: 15px 18px;
+            }
+
+            .welcome-section h2 {
+                font-size: 22px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="dashboard-container">
+        <!-- ===== HEADER ===== -->
+        <header class="header">
+            <div class="header-left">
+                <span class="logo">📋</span>
+                <h1>Task<span>Manager</span></h1>
+                <span class="badge">⚡ MySQL Database</span>
+            </div>
+            <div class="header-right">
+                <div class="user-info">
+                    <div class="avatar" id="userAvatar">U</div>
+                    <div>
+                        <div class="user-name" id="userName">User</div>
+                        <div class="user-email" id="userEmail">user@email.com</div>
+                    </div>
+                </div>
+                <button class="logout-btn" onclick="logout()">🚪 Logout</button>
+            </div>
+        </header>
+
+        <!-- ===== WELCOME ===== -->
+        <section class="welcome-section">
+            <h2>Welcome, <span id="welcomeName">User</span>! 👋</h2>
+            <p>Manage your tasks efficiently — Add, Edit, and Delete</p>
+        </section>
+
+        <!-- ===== ADD TASK ===== -->
+        <section class="add-task-section">
+            <h3 id="formHeading"><i>➕</i> Add New Task</h3>
+            <form id="taskForm">
+                <input 
+                    type="text" 
+                    id="taskTitle" 
+                    placeholder="Task title *" 
+                    required
+                >
+                <input 
+                    type="text" 
+                    id="taskDescription" 
+                    placeholder="Description (optional)"
+                >
+                <button type="submit" id="submitBtn">Add Task</button>
+                <button type="button" class="cancel-edit-btn" id="cancelEditBtn" onclick="cancelEdit()">Cancel</button>
+            </form>
+        </section>
+
+        <!-- ===== TASK LIST ===== -->
+        <section class="task-list-section">
+            <div class="task-list-header">
+                <h3><i>📝</i> Your Tasks</h3>
+                <span class="task-count" id="taskCount">0 tasks</span>
+            </div>
+            <div id="tasksContainer">
+                <div class="loading">Loading tasks...</div>
+            </div>
+        </section>
+    </div>
+
+    <script>
+        // ============================================
+        // API BASE URL
+        // ============================================
+        const API_BASE = 'http://localhost:8000';
+
+        // ============================================
+        // CHECK LOGIN
+        // ============================================
+        const isLoggedIn = localStorage.getItem('isLoggedIn');
+        const userId = localStorage.getItem('userId');
+        const userEmail = localStorage.getItem('userEmail');
+        
+        if (!isLoggedIn || !userId) {
+            window.location.href = 'index.html';
+        }
+
+        // ============================================
+        // DISPLAY USER INFO
+        // ============================================
+        const userName = localStorage.getItem('userName') || 'User';
+        
+        document.getElementById('userName').textContent = userName;
+        document.getElementById('userAvatar').textContent = userName.charAt(0).toUpperCase();
+        document.getElementById('userEmail').textContent = userEmail;
+        document.getElementById('welcomeName').textContent = userName;
+
+        // ============================================
+        // EDIT STATE
+        // ============================================
+        let editingTaskId = null;
+
+        // ============================================
+        // LOAD TASKS FROM DATABASE
+        // ============================================
+        async function loadTasks() {
+            const container = document.getElementById('tasksContainer');
+            const count = document.getElementById('taskCount');
+
+            try {
+                const response = await fetch(`${API_BASE}/get_tasks_api.php?user_id=${userId}`);
+                const data = await response.json();
+
+                if (data.status === 'success') {
+                    const tasks = data.tasks;
+                    count.textContent = `${tasks.length} tasks`;
+
+                    if (tasks.length === 0) {
+                        container.innerHTML = `
+                            <div class="no-tasks">
+                                <span class="emoji">📭</span>
+                                No tasks yet. Add your first task above!
+                            </div>
+                        `;
+                        return;
+                    }
+
+                    container.innerHTML = tasks.map(task => `
+                        <div class="task-item">
+                            <div class="task-info">
+                                <div class="task-title">${escapeHtml(task.title)}</div>
+                                ${task.description ? `<div class="task-description">${escapeHtml(task.description)}</div>` : ''}
+                                <div class="task-meta">
+                                    <span>📆 Created: ${new Date(task.created_at).toLocaleString()}</span>
+                                    ${task.updated_at !== task.created_at ? `<span>✏️ Updated: ${new Date(task.updated_at).toLocaleString()}</span>` : ''}
+                                </div>
+                            </div>
+                            <div class="task-actions">
+                                <button class="edit-btn" onclick="editTask(${task.id}, '${escapeJs(task.title)}', '${escapeJs(task.description || '')}')">
+                                    ✏️ Edit
+                                </button>
+                                <button class="delete-btn" onclick="deleteTask(${task.id})">
+                                    🗑️ Delete
+                                </button>
+                            </div>
+                        </div>
+                    `).join('');
+                } else {
+                    container.innerHTML = `<div class="no-tasks">Failed to load tasks. Please try again.</div>`;
+                }
+            } catch (error) {
+                container.innerHTML = `<div class="no-tasks">Could not connect to server. Please make sure the PHP server is running.</div>`;
+            }
+        }
+
+        // ============================================
+        // ADD / UPDATE TASK
+        // ============================================
+        document.getElementById('taskForm').addEventListener('submit', async function(e) {
+            e.preventDefault();
+            
+            const title = document.getElementById('taskTitle').value.trim();
+            const description = document.getElementById('taskDescription').value.trim();
+
+            if (!title) {
+                alert('Please enter a task title');
+                document.getElementById('taskTitle').focus();
+                return;
+            }
+
+            const btn = document.getElementById('submitBtn');
+            btn.disabled = true;
+
+            try {
+                let response;
+
+                if (editingTaskId) {
+                    // UPDATE existing task
+                    response = await fetch(`${API_BASE}/edit_task_api.php`, {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify({
+                            task_id: editingTaskId,
+                            user_id: parseInt(userId),
+                            title: title,
+                            description: description
+                        })
+                    });
+                } else {
+                    // ADD new task
+                    response = await fetch(`${API_BASE}/add_task_api.php`, {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify({
+                            user_id: parseInt(userId),
+                            title: title,
+                            description: description
+                        })
+                    });
+                }
+
+                const data = await response.json();
+
+                if (data.status === 'success') {
+                    // Reset form
+                    document.getElementById('taskForm').reset();
+                    cancelEdit();
+                    loadTasks();
+
+                    // Show success feedback
+                    const originalText = btn.textContent;
+                    btn.textContent = editingTaskId ? '✅ Updated!' : '✅ Added!';
+                    setTimeout(() => {
+                        btn.textContent = originalText;
+                    }, 1500);
+                } else {
+                    alert(data.message);
+                }
+            } catch (error) {
+                alert('Could not connect to server. Please make sure the PHP server is running.');
+            }
+
+            btn.disabled = false;
+        });
+
+        // ============================================
+        // EDIT TASK - Fill form with task data
+        // ============================================
+        function editTask(taskId, title, description) {
+            editingTaskId = taskId;
+            document.getElementById('taskTitle').value = title;
+            document.getElementById('taskDescription').value = description;
+            document.getElementById('submitBtn').textContent = 'Update Task';
+            document.getElementById('formHeading').innerHTML = '<i>✏️</i> Edit Task';
+            document.getElementById('cancelEditBtn').style.display = 'inline-block';
+            document.getElementById('taskTitle').focus();
+
+            // Scroll to form
+            document.querySelector('.add-task-section').scrollIntoView({ behavior: 'smooth' });
+        }
+
+        // ============================================
+        // CANCEL EDIT - Reset form to add mode
+        // ============================================
+        function cancelEdit() {
+            editingTaskId = null;
+            document.getElementById('taskForm').reset();
+            document.getElementById('submitBtn').textContent = 'Add Task';
+            document.getElementById('formHeading').innerHTML = '<i>➕</i> Add New Task';
+            document.getElementById('cancelEditBtn').style.display = 'none';
+        }
+
+        // ============================================
+        // DELETE TASK
+        // ============================================
+        async function deleteTask(taskId) {
+            if (!confirm('Are you sure you want to delete this task?')) return;
+
+            try {
+                const response = await fetch(`${API_BASE}/delete_task_api.php`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        task_id: taskId,
+                        user_id: parseInt(userId)
+                    })
+                });
+
+                const data = await response.json();
+
+                if (data.status === 'success') {
+                    loadTasks();
+                } else {
+                    alert(data.message);
+                }
+            } catch (error) {
+                alert('Could not connect to server. Please make sure the PHP server is running.');
+            }
+        }
+
+        // ============================================
+        // LOGOUT
+        // ============================================
+        function logout() {
+            if (confirm('Are you sure you want to logout?')) {
+                localStorage.removeItem('isLoggedIn');
+                localStorage.removeItem('userId');
+                localStorage.removeItem('userEmail');
+                localStorage.removeItem('userName');
+                window.location.href = 'index.html';
+            }
+        }
+
+        // ============================================
+        // UTILITY FUNCTIONS
+        // ============================================
+        function escapeHtml(text) {
+            const div = document.createElement('div');
+            div.textContent = text;
+            return div.innerHTML;
+        }
+
+        function escapeJs(text) {
+            return text.replace(/\\/g, '\\\\').replace(/'/g, "\\'").replace(/"/g, '\\"');
+        }
+
+        // ============================================
+        // LOAD TASKS ON PAGE LOAD
+        // ============================================
+        loadTasks();
+    </script>
+</body>
+</html>

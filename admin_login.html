@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin Login - Task Manager</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <div class="auth-container">
+        <div class="auth-box">
+            <div class="auth-header">
+                <h2>Admin <span>Login</span></h2>
+                <p style="color: #8ab4d6;">🛡️ Admin Panel Access</p>
+            </div>
+
+            <form id="adminLoginForm">
+                <div class="input-group">
+                    <label>📧 Email Address</label>
+                    <input type="email" id="email" placeholder="Enter admin email" required>
+                </div>
+
+                <div class="input-group">
+                    <label>🔑 Password</label>
+                    <input type="password" id="password" placeholder="Enter admin password" required>
+                </div>
+
+                <button type="submit" class="btn-primary">Admin Login →</button>
+            </form>
+
+            <span class="toggle-link" onclick="window.location.href='index.html'">
+                ← Back to User Login
+            </span>
+        </div>
+    </div>
+
+    <script>
+        const API_BASE = 'http://localhost:8000';
+
+        document.getElementById('adminLoginForm').addEventListener('submit', async function(e) {
+            e.preventDefault();
+
+            const email = document.getElementById('email').value.trim();
+            const password = document.getElementById('password').value;
+
+            try {
+                const response = await fetch(`${API_BASE}/admin_login_api.php`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ email, password })
+                });
+
+                const data = await response.json();
+
+                if (data.status === 'success') {
+                    localStorage.setItem('isAdminLoggedIn', 'true');
+                    localStorage.setItem('adminId', data.admin_id);
+                    localStorage.setItem('adminName', data.admin);
+                    localStorage.setItem('adminEmail', email);
+                    alert(data.message);
+                    window.location.href = 'admin_dashboard.html';
+                } else {
+                    alert(data.message);
+                }
+            } catch (error) {
+                alert('Could not connect to server. Please make sure the PHP server is running.');
+            }
+        });
+    </script>
+</body>
+</html>
